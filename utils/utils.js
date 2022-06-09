@@ -3,10 +3,10 @@ const request = require('postman-request');
 const unit = "f", search = "lahore"
 const forecast = (coords, unit, callback) => {
     const weatherURL = `http://api.weatherstack.com/current?access_key=a567ab5927fb649e1c980d400e36c343&query=${coords.latitude},${coords.longitude}&units=${unit}`;
-    request.get(weatherURL, (err, response) => {
+    request.get(weatherURL, { json: true  }, (err, response) => {
         if (!err) {
-            const { weather_descriptions: [desc], temperature, precip } = JSON.parse(response.body)?.current;
-            callback(undefined, `${coords.location} - Weather Condition \n${desc}. It is currently ${temperature} degrees out. There is a ${precip}% chance of rain.`)
+            const { weather_descriptions: [desc], temperature, precip, pressure, wind_speed } = response.body?.current;
+            callback(undefined, `${coords.location} - Weather Condition \n${desc}. It is currently ${temperature} degrees out. There is a ${precip}% chance of rain. \n Wind Speed: ${wind_speed}ms and Pressure: ${pressure} torr`)
         } else {
             callback('Error parsing response body: ' + response + '\n' + err);
         }
